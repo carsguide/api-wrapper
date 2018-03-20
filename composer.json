@@ -1,0 +1,32 @@
+{
+    "name": "carsguide/apiwrapper",
+    "description": "Service api wrapper",
+    "require": {
+        "carsguide/auth-manager": "^1.0",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carl Adermann",
+            "email": "carl.adermann@carsguide.com.au"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Carsguide\\ApiWrapper\\" : "src/" 
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Carsguide\\Tests\\": "tests"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Carsguide\\ApiWrapper\\Providers\\ApiWrapperProvider"
+            ]
+        }
+    }
+}
