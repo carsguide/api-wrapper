@@ -1,7 +1,6 @@
 <?php
 namespace Carsguide\ApiWrapper;
 
-use Carsguide\Auth\AuthManager;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
@@ -49,11 +48,9 @@ class ApiWrapper
      * @param GuzzleHttp\Client $client
      * @return void
      */
-    public function __construct(AuthManager $manager, Client $client)
+    public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->auth = $manager;
-
     }
 
     /**
