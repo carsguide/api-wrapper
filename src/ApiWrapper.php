@@ -41,6 +41,8 @@ class ApiWrapper
      */
     const MISSING_CONNECTION_ERROR = 'Missing connection config';
 
+    protected $headers = [];
+
     /**
      * Set the client and Authentication Manager
      *
@@ -58,7 +60,7 @@ class ApiWrapper
      * Set request resource
      *
      * @param string
-     * @return ServiceManager
+     * @return ApiWrapper
      */
     public function setResource($resource)
     {
@@ -71,7 +73,7 @@ class ApiWrapper
      * Set request Audience in the auth manager
      *
      * @param string
-     * @return ServiceManager
+     * @return ApiWrapper
      */
     public function setAudience($audience)
     {
@@ -84,7 +86,7 @@ class ApiWrapper
      * Set Request type
      *
      * @param string
-     * @return ServiceManager
+     * @return ApiWrapper
      */
     public function setRequestType($type)
     {
@@ -94,10 +96,36 @@ class ApiWrapper
     }
 
     /**
+     * Set JWT access token
+     *
+     * @param string
+     * @return ApiWrapper
+     */
+    public function setHeaderAuthorization($accessToken)
+    {
+        $this->headers['Authorization'] = $accessToken
+
+        return $this;
+    }
+
+    /**
+     * Set request headers
+     *
+     * @param array
+     * @return ApiWrapper
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
+
+        return $this;
+    }
+
+    /**
      * Build request
      * Connection variables are found using the audience
      *
-     * @return ServiceManager
+     * @return ApiWrapper
      */
     public function buildRequest()
     {
@@ -132,12 +160,11 @@ class ApiWrapper
      */
     protected function setRequestOptions()
     {
-        $token = $this->auth->getToken();
-
+        if(empty($this))
         $this->requestOptions = [
             'timeout' => $this->timeout,
             'headers' => [
-                'Authorization' => $this->auth->getToken()->access_token,
+                $this->headers,
             ],
         ];
     }
