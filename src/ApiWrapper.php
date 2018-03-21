@@ -100,7 +100,7 @@ class ApiWrapper
      */
     public function setHeaderAuthorization($accessToken)
     {
-        $this->headers['Authorization'] = $accessToken
+        $this->headers['Authorization'] = $accessToken;
 
         return $this;
     }
