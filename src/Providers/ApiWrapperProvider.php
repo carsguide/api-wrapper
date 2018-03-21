@@ -20,4 +20,14 @@ class ApiWrapperProvider extends ServiceProvider
             return new ApiWrapper(new AuthManager(new Client()));
         });
     }
+
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/connections.php', 'connections');
+    }
 }
