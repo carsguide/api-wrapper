@@ -124,7 +124,7 @@ class ApiWrapper
      *
      * @return ApiWrapper
      */
-    public function buildRequest()
+    protected function buildRequest()
     {
         $connection = $this->getConnection();
 
@@ -170,6 +170,8 @@ class ApiWrapper
      */
     public function makeRequest()
     {
+        $this->buildRequest();
+
         $response = $this->client->request($this->type, $this->url, $this->requestOptions);
 
         $responseCode = $response->getStatusCode();
