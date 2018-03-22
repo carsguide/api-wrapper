@@ -93,7 +93,7 @@ class ApiWrapper
     }
 
     /**
-     * Set JWT access token
+     * Set access token
      *
      * @param string
      * @return ApiWrapper
@@ -106,6 +106,19 @@ class ApiWrapper
     }
 
     /**
+     * Set bearer token
+     *
+     * @param string
+     * @return ApiWrapper
+     */
+    public function setBearerToken($token)
+    {
+        $this->setHeaderAuthorization('Bearer ' . $token);
+
+        return $this;
+    }
+
+    /**
      * Set request headers
      *
      * @param array
@@ -113,7 +126,7 @@ class ApiWrapper
      */
     public function setHeaders($headers)
     {
-        $this->headers = $headers;
+        $this->headers = array_merge($this->headers, $headers);
 
         return $this;
     }
