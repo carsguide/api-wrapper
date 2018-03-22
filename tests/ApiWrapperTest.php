@@ -36,11 +36,50 @@ class ApiWrapperTest extends TestCase
      *@test
      *
      */
+    public function missingConnectionThrowsErrorTest()
+    {
+        $this->expectException(Exception::class);
+
+        $this->make404Request('missing_host');
+    }
+
+    /**
+     *@test
+     *
+     */
+    public function missingConnectionHostThrowsErrorTest()
+    {
+        Config::set('connections.example_host', ['version' => 'v1']);
+
+        $this->expectException(Exception::class);
+
+        $this->makeValidRequest('missing_host');
+
+        Config::unset('connections.example_host');
+    }
+
+    /**
+     *@test
+     *
+     */
+    public function missingConnectionVersionThrowsErrorTest()
+    {
+        Config::set('connections.example_host', ['host' => 'host']);
+
+        $this->expectException(Exception::class);
+
+        $this->buildRequest();
+    }
+
+    /**
+     *@test
+     *
+     */
     public function shouldLogSuccessTest()
     {
-        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
 
-        Log::shouldReceive('info')->times(1);
+        Log::shouldReceive('info')->twice();
 
         $this->makeValidRequest();
 
@@ -55,9 +94,9 @@ class ApiWrapperTest extends TestCase
      */
     public function shouldLogFailureTest()
     {
-        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
 
-        Log::shouldReceive('error')->once();
+        Log::shouldReceive('error')->twice();
 
         $this->make404Request();
 
@@ -90,65 +129,31 @@ class ApiWrapperTest extends TestCase
         $this->assertEquals($this->service->requestOptions['headers']['Authorization'], 'token');
     }
 
-    /**
-     *@test
-     *
-     */
-    public function missingConnectionThrowsErrorTest()
+    protected function make404Request($host = null)
     {
-        $this->expectException(Exception::class);
-
-        $this->buildRequest();
-    }
-
-    /**
-     *@test
-     *
-     */
-    public function missingConnectionHostThrowsErrorTest()
-    {
-        Config::set('connections.host', ['version' => 'v1']);
-
-        $this->expectException(Exception::class);
-
-        $this->buildRequest();
-    }
-
-    /**
-     *@test
-     *
-     */
-    public function missingConnectionVersionThrowsErrorTest()
-    {
-        Config::set('connections.host', ['host' => 'host']);
-
-        $this->expectException(Exception::class);
-
-        $this->buildRequest();
-    }
-
-    protected function make404Request()
-    {
-        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
 
         $response = new Response(404, ['X-Foo' => 'Bar']);
 
-        $this->makeRequest($response);
+        $this->makeRequest($response, $host);
 
     }
 
-    protected function makeValidRequest()
+    protected function makeValidRequest($host = null)
     {
-        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
 
         $response = new Response(200, ['X-Foo' => 'Bar']);
 
-        $this->makeRequest($response);
+        $this->makeRequest($response, $host);
 
     }
 
-    protected function makeRequest($response)
+    protected function makeRequest($response, $api = 'example_host')
     {
+        if (!$api) {
+            $api = 'example_host';
+        }
         $encryptedNvic = 'nvic';
 
         $token = (object) ['access_token' => 'token'];
@@ -158,23 +163,23 @@ class ApiWrapperTest extends TestCase
 
         $this->service = new ApiWrapper($this->client);
 
-        $this->service->setApi('host')
+        $this->service->setApi($api)
             ->setHeaderAuthorization('token')
             ->setRequestType('GET')
             ->setResource('/vehicles/nvic')
-            ->buildRequest();
+            ->makeRequest();
     }
 
-    protected function buildRequest()
+    protected function buildRequest($api = 'example_host')
     {
         $encryptedNvic = 'nvic';
 
         $this->service = new ApiWrapper($this->client);
-        $this->service->setApi('host')
+        $this->service->setApi($api)
             ->setHeaderAuthorization('token')
             ->setRequestType('GET')
             ->setResource('/vehicles/nvic')
-            ->buildRequest();
+            ->makeRequest();
     }
 
 }
