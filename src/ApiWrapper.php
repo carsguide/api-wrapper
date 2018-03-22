@@ -67,14 +67,14 @@ class ApiWrapper
     }
 
     /**
-     * Set request Audience in the auth manager
+     * Set request api in the auth manager
      *
      * @param string
      * @return ApiWrapper
      */
-    public function setAudience($audience)
+    public function setApi($api)
     {
-        $this->audience = $audience;
+        $this->api = $api;
 
         return $this;
     }
@@ -120,7 +120,7 @@ class ApiWrapper
 
     /**
      * Build request
-     * Connection variables are found using the audience
+     * Connection variables are found using the api
      *
      * @return ApiWrapper
      */
@@ -142,7 +142,7 @@ class ApiWrapper
      */
     protected function getConnection()
     {
-        $connection = config('connections.' . $this->audience);
+        $connection = config('connections.' . $this->api);
 
         if (!$connection || empty($connection['host']) || empty($connection['version'])) {
             throw new Exception(static::MISSING_CONNECTION_ERROR);
@@ -159,9 +159,7 @@ class ApiWrapper
     {
         $this->requestOptions = [
             'timeout' => $this->timeout,
-            'headers' => [
-                $this->headers,
-            ],
+            'headers' => $this->headers,
         ];
     }
 
@@ -196,7 +194,7 @@ class ApiWrapper
     protected function logSuccess()
     {
         Log::info(static::SUCCESS_LOG, [
-            'audience' => $this->audience,
+            'api' => $this->api,
             'url' => $this->url,
         ]);
     }

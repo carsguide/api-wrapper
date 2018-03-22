@@ -3,7 +3,6 @@
 namespace Carsguide\Tests\ApiWrapper;
 
 use Carsguide\ApiWrapper\ApiWrapper;
-use Carsguide\Auth\AuthManager;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -31,8 +30,6 @@ class ApiWrapperTest extends TestCase
         $handler = HandlerStack::create($mock);
         $this->client = new Client(['handler' => $handler]);
         $this->client = Mockery::mock(Client::class);
-
-        $this->authManager = Mockery::mock(AuthManager::class);
     }
 
     /**
@@ -41,15 +38,11 @@ class ApiWrapperTest extends TestCase
      */
     public function shouldLogSuccessTest()
     {
-        Config::set('connections.audience', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
 
         Log::shouldReceive('info')->times(1);
 
         $this->makeValidRequest();
-
-        $this->authManager->shouldReceive('getAudience')
-            ->once()
-            ->andReturn('audience');
 
         $response = $this->service->makeRequest();
 
@@ -62,7 +55,7 @@ class ApiWrapperTest extends TestCase
      */
     public function shouldLogFailureTest()
     {
-        Config::set('connections.audience', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
 
         Log::shouldReceive('error')->once();
 
@@ -114,7 +107,7 @@ class ApiWrapperTest extends TestCase
      */
     public function missingConnectionHostThrowsErrorTest()
     {
-        Config::set('connections.audience', ['version' => 'v1']);
+        Config::set('connections.host', ['version' => 'v1']);
 
         $this->expectException(Exception::class);
 
@@ -127,7 +120,7 @@ class ApiWrapperTest extends TestCase
      */
     public function missingConnectionVersionThrowsErrorTest()
     {
-        Config::set('connections.audience', ['host' => 'host']);
+        Config::set('connections.host', ['host' => 'host']);
 
         $this->expectException(Exception::class);
 
@@ -136,7 +129,7 @@ class ApiWrapperTest extends TestCase
 
     protected function make404Request()
     {
-        Config::set('connections.audience', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
 
         $response = new Response(404, ['X-Foo' => 'Bar']);
 
@@ -146,7 +139,7 @@ class ApiWrapperTest extends TestCase
 
     protected function makeValidRequest()
     {
-        Config::set('connections.audience', ['host' => 'host', 'version' => 'v1']);
+        Config::set('connections.host', ['host' => 'host', 'version' => 'v1']);
 
         $response = new Response(200, ['X-Foo' => 'Bar']);
 
@@ -157,25 +150,18 @@ class ApiWrapperTest extends TestCase
     protected function makeRequest($response)
     {
         $encryptedNvic = 'nvic';
-        //$response = new Response(200, ['X-Foo' => 'Bar']);
 
         $token = (object) ['access_token' => 'token'];
-        $this->authManager->shouldReceive('getToken')
-            ->andReturn($token);
-
-        $this->authManager->shouldReceive('setAudience');
-        $this->authManager->shouldReceive('getAudience')
-            ->once()
-            ->andReturn('audience');
 
         $this->client->shouldReceive('request')
             ->andReturn($response);
 
-        $this->service = new ApiWrapper($this->authManager, $this->client);
+        $this->service = new ApiWrapper($this->client);
 
-        $this->service->setAudience('host')
+        $this->service->setApi('host')
+            ->setHeaderAuthorization('token')
             ->setRequestType('GET')
-            ->setResource('/vehicles/' . $encryptedNvic)
+            ->setResource('/vehicles/nvic')
             ->buildRequest();
     }
 
@@ -183,15 +169,11 @@ class ApiWrapperTest extends TestCase
     {
         $encryptedNvic = 'nvic';
 
-        $this->authManager->shouldReceive('setAudience');
-        $this->authManager->shouldReceive('getAudience')
-            ->once()
-            ->andReturn('audience');
-
-        $this->service = new ApiWrapper($this->authManager, $this->client);
-        $this->service->setAudience('host')
+        $this->service = new ApiWrapper($this->client);
+        $this->service->setApi('host')
+            ->setHeaderAuthorization('token')
             ->setRequestType('GET')
-            ->setResource('/vehicles/' . $encryptedNvic)
+            ->setResource('/vehicles/nvic')
             ->buildRequest();
     }
 
