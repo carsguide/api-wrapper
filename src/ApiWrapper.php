@@ -43,6 +43,13 @@ class ApiWrapper
     protected $headers = [];
 
     /**
+     * Http body content
+     *
+     * @var string
+     */
+    protected $body = '';
+
+    /**
      * Set the client and Authentication Manager
      *
      * @param GuzzleHttp\Client $client
@@ -132,6 +139,19 @@ class ApiWrapper
     }
 
     /**
+     * Set http body
+     *
+     * @param array $body
+     * @return ApiWrapper
+     */
+    public function setBody($body)
+    {
+        $this->body = $body;
+
+        return $this;
+    }
+
+    /**
      * Build request
      * Connection variables are found using the api
      *
@@ -174,6 +194,10 @@ class ApiWrapper
             'timeout' => $this->timeout,
             'headers' => $this->headers,
         ];
+
+        if (!empty($this->body)) {
+            $this->requestOptions['body'] = $this->body;
+        }
     }
 
     /**
