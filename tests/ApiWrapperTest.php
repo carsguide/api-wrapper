@@ -129,6 +129,36 @@ class ApiWrapperTest extends TestCase
         $this->assertEquals($this->service->requestOptions['headers']['Authorization'], 'token');
     }
 
+    /**
+     *@test
+     *
+     */
+    public function decodeBodyThrowsExceptionOnNullResponse()
+    {
+        $this->expectException(Exception::class);
+
+        $this->service = new ApiWrapper($this->client);
+
+        $this->service->decodeBody();
+    }
+
+    /**
+     *@test
+     *
+     */
+    public function decodeBodyWillReturnACollection()
+    {
+        Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
+
+        $response = new Response(200, ['X-Foo' => 'Bar'], json_encode(['data' => 'first']));
+
+        $this->makeRequest($response);
+
+        $response = $this->service->decodeBody();
+
+        $this->assertEquals('first', $response->first());
+    }
+
     protected function make404Request($host = null)
     {
         Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);

@@ -209,9 +209,9 @@ class ApiWrapper
     {
         $this->buildRequest();
 
-        $response = $this->client->request($this->type, $this->url, $this->requestOptions);
+        $this->response = $this->client->request($this->type, $this->url, $this->requestOptions);
 
-        $responseCode = $response->getStatusCode();
+        $responseCode = $this->response->getStatusCode();
 
         $successfulRequest = $responseCode == 200;
 
@@ -221,7 +221,21 @@ class ApiWrapper
             $this->logFailure($responseCode);
         }
 
-        return $response;
+        return $this->response;
+    }
+
+    /**
+     * Return body as a collection
+     *
+     * @return collection
+     */
+    public function decodeBody()
+    {
+        if (empty($this->response)) {
+            throw new Exception('Response not found');
+        }
+
+        return collect(json_decode($this->response->getBody(), true));
     }
 
     /**
