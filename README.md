@@ -21,9 +21,15 @@ return [
 ## Usage
 ### Create request
 ```php
-$response = $this->api->setAudience('connection_name')
-                ->setRequestType('GET')
-                ->setResource('/resource/)
-                ->buildRequest()
-                ->makeRequest();
+$response = $this->api->setApi('vader')
+        ->setRequestType('POST')
+        ->setResource('/resource')
+        ->setBody('body')
+        ->setHeaders([
+            'content-type' => 'application/json',
+        ])
+        ->setBearerToken($access_token)
+        ->makeRequest();
+
+$body = $this->api->decodeBody();
 ```
