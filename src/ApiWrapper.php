@@ -146,7 +146,7 @@ class ApiWrapper
      */
     public function setBody($body)
     {
-        $this->body = $body;
+        $this->body = json_encode($body);
 
         return $this;
     }
