@@ -72,6 +72,18 @@ class ApiWrapperTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldSetQueryParams()
+    {
+        $api = new ApiWrapper($this->client);
+
+        $api->setQueryParams(['foo' => 'bar']);
+
+        $this->assertEquals(['foo' => 'bar'], $this->getProtectedValue($api, 'queryParams'));
+    }
+
+    /**
      *@test
      *
      */
@@ -127,6 +139,20 @@ class ApiWrapperTest extends TestCase
         $this->assertEquals($this->service->requestOptions['timeout'], 10);
 
         $this->assertEquals($this->service->requestOptions['headers']['Authorization'], 'token');
+    }
+
+    /**
+     * @test
+     */
+    public function shouldAddQueryToRequestOptions()
+    {
+        $api = new ApiWrapper($this->client);
+
+        $api->setQueryParams(['foo' => 'bar']);
+
+        $this->invokeMethod($api, 'setRequestOptions');
+
+        $this->assertCount(1, $api->requestOptions['query']);
     }
 
     /**
@@ -212,4 +238,37 @@ class ApiWrapperTest extends TestCase
             ->makeRequest();
     }
 
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     */
+    public function invokeMethod(&$object, $methodName, array $parameters = [])
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
+    /**
+     * Get protected property value
+     *
+     * @param $object
+     * @param string $property
+     * @return void
+     */
+    protected function getProtectedValue($object, $property)
+    {
+        $reflection = (new \ReflectionClass($object))->getProperty($property);
+
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
+    }
 }

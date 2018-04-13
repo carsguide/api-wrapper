@@ -50,6 +50,13 @@ class ApiWrapper
     protected $body = '';
 
     /**
+     * Query params
+     *
+     * @var array
+     */
+    protected $queryParams = [];
+
+    /**
      * Set the client and Authentication Manager
      *
      * @param GuzzleHttp\Client $client
@@ -152,6 +159,19 @@ class ApiWrapper
     }
 
     /**
+     * Set query params
+     *
+     * @param array $params
+     * @return ApiWrapper
+     */
+    public function setQueryParams(array $params)
+    {
+        $this->queryParams = $params;
+
+        return $this;
+    }
+
+    /**
      * Build request
      * Connection variables are found using the api
      *
@@ -197,6 +217,10 @@ class ApiWrapper
 
         if (!empty($this->body)) {
             $this->requestOptions['body'] = $this->body;
+        }
+
+        if (count($this->queryParams)) {
+            $this->requestOptions['query'] = $this->queryParams;
         }
     }
 
