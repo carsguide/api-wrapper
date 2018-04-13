@@ -72,6 +72,18 @@ class ApiWrapperTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function shouldSetQueryParams()
+    {
+        $api = new ApiWrapper($this->client);
+
+        $api->setQueryParams(['foo' => 'bar']);
+
+        $this->assertEquals(['foo' => 'bar'], $this->getProtectedValue($api, 'queryParams'));
+    }
+
+    /**
      *@test
      *
      */
@@ -212,4 +224,19 @@ class ApiWrapperTest extends TestCase
             ->makeRequest();
     }
 
+    /**
+     * Get protected property value
+     *
+     * @param $object
+     * @param string $property
+     * @return void
+     */
+    protected function getProtectedValue($object, $property)
+    {
+        $reflection = (new \ReflectionClass($object))->getProperty($property);
+
+        $reflection->setAccessible(true);
+
+        return $reflection->getValue($object);
+    }
 }
