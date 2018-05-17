@@ -9,6 +9,13 @@ class ApiWrapper
 {
 
     /**
+     * Api Audience
+     *
+     * @var string
+     */
+    protected $api;
+
+    /**
      * Request timeout
      *
      * @var int
@@ -40,6 +47,11 @@ class ApiWrapper
      */
     const MISSING_CONNECTION_ERROR = 'Missing connection config';
 
+    /**
+     * Request headers
+     *
+     * @var array
+     */
     protected $headers = [];
 
     /**
@@ -222,6 +234,57 @@ class ApiWrapper
         if (count($this->queryParams)) {
             $this->requestOptions['query'] = $this->queryParams;
         }
+    }
+
+    /**
+     * Request data via get method
+     *
+     * @param string $endpoint
+     * @param array $params
+     * @return \Illuminate\Support\Collection
+     */
+    public function get(string $endpoint, array $params = [])
+    {
+        return $this->request('GET', $endpoint, $params);
+    }
+
+    /**
+     * Communicate api via post method
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function post(string $endpoint, array $data)
+    {
+        if (!count($this->headers)) {
+            $this->setHeaders(['content-type' => 'application/json']);
+        }
+
+        return $this->request('POST', $endpoint, $data);
+    }
+
+    /**
+     * Make api request
+     *
+     * @param string $httpMethod
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function request(string $httpMethod, string $endpoint, array $data = [])
+    {
+        $this->setRequestType($httpMethod)
+            ->setResource($endpoint)
+            ->setHeaders($this->headers);
+
+        if ($httpMethod == 'GET') {
+            $this->setQueryParams($data);
+        } else {
+            $this->setBody($data);
+        }
+
+        return $this->makeRequest();
     }
 
     /**
