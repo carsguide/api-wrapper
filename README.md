@@ -13,8 +13,11 @@ To create a connection, add the config.connections file. Each item in the array 
 
 ```
 return [
-    'connection_name' => ['host' => 'example.com',
-        'version' => 'v1'],
+    'connection_name' => [
+        'host' => 'example.com',
+        'version' => 'v1',
+        'audience' => 'Api Audience'
+    ],
 ];
 ```
 
