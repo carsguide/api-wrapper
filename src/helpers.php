@@ -2,7 +2,6 @@
 
 use Carsguide\ApiWrapper\ApiWrapper;
 use Carsguide\Auth\AuthManager;
-use Exception;
 
 if (!function_exists('api_wrapper')) {
     /**
@@ -34,7 +33,7 @@ if (!function_exists('get_jwt')) {
             ->getToken();
 
         if (!$response->success) {
-            throw new Exception($response->message, $response->status_code);
+            throw new \Exception($response->message, $response->status_code);
         }
 
         return $response->access_token;
