@@ -185,6 +185,76 @@ class ApiWrapperTest extends TestCase
         $this->assertEquals('first', $response->first());
     }
 
+    /**
+     *@test
+     */
+    public function shouldSetJsonHeader()
+    {
+        $api = new ApiWrapper($this->client);
+
+        $this->invokeMethod($api, 'setJsonHeader');
+
+        $this->assertEquals(['content-type' => 'application/json'], $this->getProtectedValue($api, 'headers'));
+    }
+
+    /**
+     *@test
+     */
+    public function shouldBuildAndSendRequest()
+    {
+        $this->client->shouldReceive('request')
+            ->andReturn(new Response(200, ['X-Foo' => 'Bar']));
+
+        $api = (new ApiWrapper($this->client))->setApi('theemperor')
+            ->setBearerToken('xyz');
+
+        $response = $this->invokeMethod($api, 'request', [
+            'GET',
+            '/dealers',
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+
+    /**
+     *@test
+     */
+    public function shouldSendRequestViaGetMethodAndReturn200()
+    {
+        $this->client->shouldReceive('request')
+            ->andReturn(new Response(200, ['X-Foo' => 'Bar']));
+
+        $api = (new ApiWrapper($this->client))->setApi('theemperor')
+            ->setBearerToken('xyz');
+
+        $response = $this->invokeMethod($api, 'get', [
+            '/dealers',
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+    }
+
+    /**
+     *@test
+     */
+    public function shouldSendRequestViaPostMethodAndReturn200()
+    {
+        $this->client->shouldReceive('request')
+            ->andReturn(new Response(200, ['X-Foo' => 'Bar']));
+
+        $api = (new ApiWrapper($this->client))->setApi('theemperor')
+            ->setBearerToken('xyz');
+
+        $response = $this->invokeMethod($api, 'get', [
+            '/dealers',
+            ['dealer_id' => '1000'],
+        ]);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+    }
+
     protected function make404Request($host = null)
     {
         Config::set('connections.example_host', ['host' => 'host', 'version' => 'v1']);
