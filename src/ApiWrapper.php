@@ -237,6 +237,18 @@ class ApiWrapper
     }
 
     /**
+     * Set json header
+     *
+     * @return void
+     */
+    protected function setJsonHeader()
+    {
+        if (!isset($this->headers['content-type'])) {
+            $this->setHeaders(['content-type' => 'application/json']);
+        }
+    }
+
+    /**
      * Request data via get method
      *
      * @param string $endpoint
@@ -245,7 +257,9 @@ class ApiWrapper
      */
     public function get(string $endpoint, array $params = [])
     {
-        return $this->request('GET', $endpoint, $params);
+        $this->setQueryParams($params);
+
+        return $this->request('GET', $endpoint);
     }
 
     /**
@@ -257,34 +271,72 @@ class ApiWrapper
      */
     public function post(string $endpoint, array $data)
     {
-        if (!count($this->headers)) {
-            $this->setHeaders(['content-type' => 'application/json']);
-        }
+        $this->setJsonHeader();
 
-        return $this->request('POST', $endpoint, $data);
+        $this->setBody($data);
+
+        return $this->request('POST', $endpoint);
     }
 
     /**
-     * Make api request
+     * Communicate api via put method
      *
-     * @param string $httpMethod
      * @param string $endpoint
      * @param array $data
      * @return \Illuminate\Support\Collection
      */
-    public function request(string $httpMethod, string $endpoint, array $data = [])
+    public function put(string $endpoint, array $data)
     {
-        $this->setRequestType($httpMethod)
+        $this->setJsonHeader();
+
+        $this->setBody($data);
+
+        return $this->request('PUT', $endpoint);
+    }
+
+        /**
+     * Communicate api via patch method
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function patch(string $endpoint, array $data)
+    {
+        $this->setJsonHeader();
+
+        $this->setBody($data);
+
+        return $this->request('PATCH', $endpoint);
+    }
+
+    /**
+     * Delete request
+     *
+     * @param string $endpoint
+     * @param array $params
+     * @return \Illuminate\Support\Collection
+     */
+    public function delete(string $endpoint, array $params = [])
+    {
+        $this->setQueryParams($params);
+
+        return $this->request('DELETE', $endpoint);
+    }
+
+    /**
+     * Build and send api request
+     *
+     * @param string $httpMethod
+     * @param string $endpoint
+     * @return \Illuminate\Support\Collection
+     */
+    protected function request(string $httpMethod, string $endpoint)
+    {
+        return $this->setRequestType($httpMethod)
             ->setResource($endpoint)
-            ->setHeaders($this->headers);
-
-        if ($httpMethod == 'GET') {
-            $this->setQueryParams($data);
-        } else {
-            $this->setBody($data);
-        }
-
-        return $this->makeRequest();
+            ->setHeaders($this->headers)
+            ->makeRequest();
     }
 
     /**
