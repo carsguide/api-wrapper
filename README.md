@@ -33,3 +33,17 @@ $response = $this->api->setApi('vader')
 
 $body = $this->api->decodeBody();
 ```
+### Request via Get method
+```php
+    $response = $this->api->setApi($api)
+        ->setBearerToken($access_token)
+        ->get($endpoint);
+
+    $body = json_decode($response->getBody());
+```
+### Request via helpers
+```php
+    $response = api_wrapper($api)->get($endpoint);
+
+    $body = json_decode($response->getBody());
+```
