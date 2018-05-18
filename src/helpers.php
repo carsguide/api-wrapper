@@ -14,7 +14,7 @@ if (!function_exists('api_wrapper')) {
     {
         return app(ApiWrapper::class)
             ->setApi($api)
-            ->setBearerToken(getJwt($api));
+            ->setBearerToken(get_jwt($api));
     }
 }
 
