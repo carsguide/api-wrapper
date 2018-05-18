@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Config;
 use Carsguide\ApiWrapper\ApiWrapper;
 use Carsguide\Auth\AuthManager;
 
@@ -27,8 +28,12 @@ if (!function_exists('get_jwt')) {
      */
     function get_jwt($api)
     {
+        if (! Config::has("connections.{$api}.audience")) {
+            throw new \Exception('Missing connection config');
+        }
+
         $response = app(AuthManager::class)
-            ->setAudience($api)
+            ->setAudience(Config::get("connections.{$api}.audience"))
             ->cache()
             ->getToken();
 
