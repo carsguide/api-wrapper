@@ -9,6 +9,13 @@ class ApiWrapper
 {
 
     /**
+     * Api Audience
+     *
+     * @var string
+     */
+    protected $api;
+
+    /**
      * Request timeout
      *
      * @var int
@@ -40,6 +47,11 @@ class ApiWrapper
      */
     const MISSING_CONNECTION_ERROR = 'Missing connection config';
 
+    /**
+     * Request headers
+     *
+     * @var array
+     */
     protected $headers = [];
 
     /**
@@ -222,6 +234,109 @@ class ApiWrapper
         if (count($this->queryParams)) {
             $this->requestOptions['query'] = $this->queryParams;
         }
+    }
+
+    /**
+     * Set json header
+     *
+     * @return void
+     */
+    protected function setJsonHeader()
+    {
+        if (!isset($this->headers['content-type'])) {
+            $this->setHeaders(['content-type' => 'application/json']);
+        }
+    }
+
+    /**
+     * Request data via get method
+     *
+     * @param string $endpoint
+     * @param array $params
+     * @return \Illuminate\Support\Collection
+     */
+    public function get(string $endpoint, array $params = [])
+    {
+        $this->setQueryParams($params);
+
+        return $this->request('GET', $endpoint);
+    }
+
+    /**
+     * Communicate api via post method
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function post(string $endpoint, array $data)
+    {
+        $this->setJsonHeader();
+
+        $this->setBody($data);
+
+        return $this->request('POST', $endpoint);
+    }
+
+    /**
+     * Communicate api via put method
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function put(string $endpoint, array $data)
+    {
+        $this->setJsonHeader();
+
+        $this->setBody($data);
+
+        return $this->request('PUT', $endpoint);
+    }
+
+        /**
+     * Communicate api via patch method
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function patch(string $endpoint, array $data)
+    {
+        $this->setJsonHeader();
+
+        $this->setBody($data);
+
+        return $this->request('PATCH', $endpoint);
+    }
+
+    /**
+     * Delete request
+     *
+     * @param string $endpoint
+     * @param array $params
+     * @return \Illuminate\Support\Collection
+     */
+    public function delete(string $endpoint, array $params = [])
+    {
+        $this->setQueryParams($params);
+
+        return $this->request('DELETE', $endpoint);
+    }
+
+    /**
+     * Build and send api request
+     *
+     * @param string $httpMethod
+     * @param string $endpoint
+     * @return \Illuminate\Support\Collection
+     */
+    protected function request(string $httpMethod, string $endpoint)
+    {
+        return $this->setRequestType($httpMethod)
+            ->setResource($endpoint)
+            ->setHeaders($this->headers)
+            ->makeRequest();
     }
 
     /**

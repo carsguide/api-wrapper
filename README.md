@@ -13,8 +13,11 @@ To create a connection, add the config.connections file. Each item in the array 
 
 ```
 return [
-    'connection_name' => ['host' => 'example.com',
-        'version' => 'v1'],
+    'connection_name' => [
+        'host' => 'example.com',
+        'version' => 'v1',
+        'audience' => 'Api Audience'
+    ],
 ];
 ```
 
@@ -32,4 +35,18 @@ $response = $this->api->setApi('vader')
         ->makeRequest();
 
 $body = $this->api->decodeBody();
+```
+### Request via Get method
+```php
+    $response = $this->api->setApi($api)
+        ->setBearerToken($access_token)
+        ->get($endpoint);
+
+    $body = json_decode($response->getBody());
+```
+### Request via helpers
+```php
+    $response = api_wrapper($api)->get($endpoint);
+
+    $body = json_decode($response->getBody());
 ```
