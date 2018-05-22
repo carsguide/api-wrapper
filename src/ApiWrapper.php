@@ -3,11 +3,9 @@ namespace Carsguide\ApiWrapper;
 
 use Exception;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 
 class ApiWrapper
 {
-
     /**
      * Api Audience
      *
@@ -28,18 +26,6 @@ class ApiWrapper
      * @var string
      */
     protected $type = 'POST';
-
-    /**
-     * Request success log message
-     *
-     */
-    const SUCCESS_LOG = 'Successful request to service';
-
-    /**
-     * Request failure log message
-     *
-     */
-    const API_FAILURE = 'Api request failed';
 
     /**
      * Error message for when the connection config can't be found
@@ -294,7 +280,7 @@ class ApiWrapper
         return $this->request('PUT', $endpoint);
     }
 
-        /**
+    /**
      * Communicate api via patch method
      *
      * @param string $endpoint
@@ -350,16 +336,6 @@ class ApiWrapper
 
         $this->response = $this->client->request($this->type, $this->url, $this->requestOptions);
 
-        $responseCode = $this->response->getStatusCode();
-
-        $successfulRequest = $responseCode == 200;
-
-        if ($successfulRequest) {
-            $this->logSuccess();
-        } else {
-            $this->logFailure($responseCode);
-        }
-
         return $this->response;
     }
 
@@ -376,34 +352,4 @@ class ApiWrapper
 
         return collect(json_decode($this->response->getBody(), true));
     }
-
-    /**
-     * Log success message
-     * Called when the api response is 200
-     *
-     * @return void
-     */
-    protected function logSuccess()
-    {
-        Log::info(static::SUCCESS_LOG, [
-            'api' => $this->api,
-            'url' => $this->url,
-        ]);
-    }
-
-    /**
-     * Log a failure message
-     * Called when the api response is not 200
-     *
-     * @param int $responseCode
-     * @return void
-     */
-    protected function logFailure($responseCode)
-    {
-        Log::error(static::API_FAILURE, [
-            'responseCode' => $responseCode,
-            'url' => $this->url,
-        ]);
-    }
-
 }
