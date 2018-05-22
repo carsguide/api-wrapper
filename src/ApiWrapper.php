@@ -184,6 +184,19 @@ class ApiWrapper
     }
 
     /**
+     * Set http multipart
+     *
+     * @param array $multipart
+     * @return ApiWrapper
+     */
+    public function setMultipart($multipart)
+    {
+        $this->multipart = $multipart;
+
+        return $this;
+    }
+
+    /**
      * Build request
      * Connection variables are found using the api
      *
@@ -234,6 +247,10 @@ class ApiWrapper
         if (count($this->queryParams)) {
             $this->requestOptions['query'] = $this->queryParams;
         }
+
+        if (!empty($this->multipart)) {
+            $this->requestOptions['multipart'] = $this->multipart;
+        }
     }
 
     /**
@@ -279,6 +296,20 @@ class ApiWrapper
     }
 
     /**
+     * Communicate api via post method with a content type of multipart
+     *
+     * @param string $endpoint
+     * @param array $data
+     * @return \Illuminate\Support\Collection
+     */
+    public function postMultipart(string $endpoint, array $data)
+    {
+        $this->setMultipart($data);
+
+        return $this->request('POST', $endpoint);
+    }
+
+    /**
      * Communicate api via put method
      *
      * @param string $endpoint
@@ -294,7 +325,7 @@ class ApiWrapper
         return $this->request('PUT', $endpoint);
     }
 
-        /**
+    /**
      * Communicate api via patch method
      *
      * @param string $endpoint
