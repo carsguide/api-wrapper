@@ -47,7 +47,7 @@ if (!function_exists('get_jwt')) {
 
 if (!function_exists('decode_body')) {
     /**
-     * Get the ApiWrapper instance
+     * Decode the psr7 response
      *
      * @param  \GuzzleHttp\Psr7\Response  $response
      * @return \Illuminate\Support\Collection
