@@ -44,3 +44,16 @@ if (!function_exists('get_jwt')) {
         return $response->access_token;
     }
 }
+
+if (!function_exists('decode_body')) {
+    /**
+     * Decode the psr7 response
+     *
+     * @param  \GuzzleHttp\Psr7\Response  $response
+     * @return \Illuminate\Support\Collection
+     */
+    function decode_body($response)
+    {
+        return collect(json_decode($response->getBody(), true));
+    }
+}
