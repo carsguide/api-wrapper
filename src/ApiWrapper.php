@@ -1,8 +1,11 @@
 <?php
+
 namespace Carsguide\ApiWrapper;
 
 use Exception;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Psr\Http\Message\ResponseInterface;
 
 class ApiWrapper
 {
@@ -57,8 +60,7 @@ class ApiWrapper
     /**
      * Set the client and Authentication Manager
      *
-     * @param GuzzleHttp\Client $client
-     * @return void
+     * @param Client $client
      */
     public function __construct(Client $client)
     {
@@ -187,6 +189,7 @@ class ApiWrapper
      * Connection variables are found using the api
      *
      * @return ApiWrapper
+     * @throws Exception
      */
     protected function buildRequest()
     {
@@ -203,6 +206,7 @@ class ApiWrapper
      * Get connection configuration
      *
      * @return array
+     * @throws Exception
      */
     protected function getConnection()
     {
@@ -256,9 +260,10 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $params
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
-    public function get(string $endpoint, array $params = [])
+    public function get(string $endpoint, array $params = [], $asCollection = false)
     {
         $this->setQueryParams($params);
 
@@ -270,7 +275,8 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function post(string $endpoint, array $data)
     {
@@ -286,7 +292,8 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function postMultipart(string $endpoint, array $data)
     {
@@ -300,7 +307,8 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function put(string $endpoint, array $data)
     {
@@ -316,7 +324,8 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function patch(string $endpoint, array $data)
     {
@@ -332,7 +341,8 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $params
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function delete(string $endpoint, array $params = [])
     {
@@ -346,7 +356,8 @@ class ApiWrapper
      *
      * @param string $httpMethod
      * @param string $endpoint
-     * @return \Illuminate\Support\Collection
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     protected function request(string $httpMethod, string $endpoint)
     {
@@ -359,7 +370,8 @@ class ApiWrapper
     /**
      * Send request
      *
-     * @return \Psr\Http\Message\ResponseInterface $response
+     * @return ResponseInterface $response
+     * @throws GuzzleException
      */
     public function makeRequest()
     {
@@ -374,6 +386,7 @@ class ApiWrapper
      * Return body as a collection
      *
      * @return collection
+     * @throws Exception
      */
     public function decodeBody()
     {
