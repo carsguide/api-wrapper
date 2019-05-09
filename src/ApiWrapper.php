@@ -263,7 +263,7 @@ class ApiWrapper
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function get(string $endpoint, array $params = [], $asCollection = false)
+    public function get(string $endpoint, array $params = [])
     {
         $this->setQueryParams($params);
 
