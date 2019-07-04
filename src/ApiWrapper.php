@@ -188,14 +188,15 @@ class ApiWrapper
      * Build request
      * Connection variables are found using the api
      *
+     * @param array $requestOptions
      * @return ApiWrapper
      * @throws Exception
      */
-    protected function buildRequest()
+    protected function buildRequest($requestOptions = [])
     {
         $connection = $this->getConnection();
 
-        $this->setRequestOptions();
+        $this->setRequestOptions($requestOptions);
 
         $this->url = $connection['host'] . '/api/' . $connection['version'] . $this->resource;
 
@@ -221,14 +222,15 @@ class ApiWrapper
     /**
      * Build the array of request options setting the timeout and authorization header
      *
+     * @param array $requestOptions
      * @return void
      */
-    protected function setRequestOptions()
+    public function setRequestOptions($requestOptions = [])
     {
-        $this->requestOptions = [
+        $this->requestOptions = array_merge([
             'timeout' => $this->timeout,
             'headers' => $this->headers,
-        ];
+        ], $requestOptions);
 
         if (!empty($this->body)) {
             $this->requestOptions['body'] = $this->body;
@@ -260,14 +262,15 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $params
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function get(string $endpoint, array $params = [])
+    public function get(string $endpoint, array $params = [], array $requestOptions = [])
     {
         $this->setQueryParams($params);
 
-        return $this->request('GET', $endpoint);
+        return $this->request('GET', $endpoint, $requestOptions);
     }
 
     /**
@@ -275,16 +278,17 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function post(string $endpoint, array $data)
+    public function post(string $endpoint, array $data, array $requestOptions = [])
     {
         $this->setJsonHeader();
 
         $this->setBody($data);
 
-        return $this->request('POST', $endpoint);
+        return $this->request('POST', $endpoint, $requestOptions);
     }
 
     /**
@@ -292,14 +296,15 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function postMultipart(string $endpoint, array $data)
+    public function postMultipart(string $endpoint, array $data, array $requestOptions = [])
     {
         $this->setMultipart($data);
 
-        return $this->request('POST', $endpoint);
+        return $this->request('POST', $endpoint, $requestOptions);
     }
 
     /**
@@ -307,16 +312,17 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function put(string $endpoint, array $data)
+    public function put(string $endpoint, array $data, array $requestOptions = [])
     {
         $this->setJsonHeader();
 
         $this->setBody($data);
 
-        return $this->request('PUT', $endpoint);
+        return $this->request('PUT', $endpoint, $requestOptions);
     }
 
     /**
@@ -324,16 +330,17 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $data
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function patch(string $endpoint, array $data)
+    public function patch(string $endpoint, array $data, array $requestOptions = [])
     {
         $this->setJsonHeader();
 
         $this->setBody($data);
 
-        return $this->request('PATCH', $endpoint);
+        return $this->request('PATCH', $endpoint, $requestOptions);
     }
 
     /**
@@ -341,14 +348,15 @@ class ApiWrapper
      *
      * @param string $endpoint
      * @param array $params
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    public function delete(string $endpoint, array $params = [])
+    public function delete(string $endpoint, array $params = [], array $requestOptions = [])
     {
         $this->setQueryParams($params);
 
-        return $this->request('DELETE', $endpoint);
+        return $this->request('DELETE', $endpoint, $requestOptions);
     }
 
     /**
@@ -356,26 +364,29 @@ class ApiWrapper
      *
      * @param string $httpMethod
      * @param string $endpoint
+     * @param array $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
      */
-    protected function request(string $httpMethod, string $endpoint)
+    protected function request(string $httpMethod, string $endpoint, array $requestOptions = [])
     {
         return $this->setRequestType($httpMethod)
             ->setResource($endpoint)
             ->setHeaders($this->headers)
-            ->makeRequest();
+            ->makeRequest($requestOptions);
     }
 
     /**
      * Send request
      *
+     * @param $requestOptions
      * @return ResponseInterface $response
      * @throws GuzzleException
+     * @throws Exception
      */
-    public function makeRequest()
+    public function makeRequest($requestOptions)
     {
-        $this->buildRequest();
+        $this->buildRequest($requestOptions);
 
         $this->response = $this->client->request($this->type, $this->url, $this->requestOptions);
 
