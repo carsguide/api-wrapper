@@ -384,7 +384,7 @@ class ApiWrapper
      * @throws GuzzleException
      * @throws Exception
      */
-    public function makeRequest($requestOptions)
+    public function makeRequest($requestOptions = [])
     {
         $this->buildRequest($requestOptions);
 
