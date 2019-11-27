@@ -17,6 +17,13 @@ class ApiWrapper
     protected $api;
 
     /**
+     * Api version
+     *
+     * @var string
+     */
+    protected $apiVersion;
+
+    /**
      * Request timeout
      *
      * @var int
@@ -89,6 +96,19 @@ class ApiWrapper
     public function setApi($api)
     {
         $this->api = $api;
+
+        return $this;
+    }
+
+    /**
+     * Set Api version
+     *
+     * @param string $apiVersion
+     * @return ApiWrapper
+     */
+    public function setApiVersion(string $apiVersion)
+    {
+        $this->apiVersion = $apiVersion;
 
         return $this;
     }
@@ -196,6 +216,8 @@ class ApiWrapper
     {
         $connection = $this->getConnection();
 
+        $connection['version'] = $this->apiVersion ?? $connection['version'];
+        
         $this->setRequestOptions($requestOptions);
 
         $this->url = $connection['host'] . '/api/' . $connection['version'] . $this->resource;
