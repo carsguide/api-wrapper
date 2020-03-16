@@ -2,7 +2,7 @@
     "name": "carsguide/apiwrapper",
     "description": "Service api wrapper",
     "require": {
-        "carsguide/auth-manager": "^3.0",
+        "carsguide/auth-manager": "dev-master",
         "guzzlehttp/guzzle": "~6.0",
         "ext-json": "*"
     },
