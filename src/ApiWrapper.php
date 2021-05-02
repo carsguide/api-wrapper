@@ -26,9 +26,11 @@ class ApiWrapper
     /**
      * Request timeout
      *
+     * Timeout if a server does not return a response in 30 seconds.
+     *
      * @var int
      */
-    public $timeout = 10;
+    public $timeout = 30;
 
     /**
      * Request type
