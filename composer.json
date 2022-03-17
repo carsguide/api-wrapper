@@ -3,7 +3,7 @@
     "description": "Service api wrapper",
     "require": {
         "carsguide/auth-manager": "dev-feature-lumen-9",
-        "guzzlehttp/guzzle": "~v6.0||^7.0.1",
+        "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*"
     },
     "license": "MIT",
