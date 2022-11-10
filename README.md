@@ -1,5 +1,5 @@
 # api-wrapper
-Api wrapper for micro services
+Api wrapper for micro services with PHP 8+ support
 
 ## Installation
 Via composer
