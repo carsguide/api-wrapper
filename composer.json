@@ -3,7 +3,8 @@
     "description": "Service api wrapper",
     "require": {
         "guzzlehttp/guzzle": "^7.2",
-        "ext-json": "*"
+        "ext-json": "*",
+        "carsguide/auth-manager": "^9.0"
     },
     "license": "MIT",
     "authors": [
