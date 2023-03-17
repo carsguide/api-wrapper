@@ -4,7 +4,7 @@
     "require": {
         "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*",
-        "carsguide/auth-manager": "^9.0"
+        "carsguide/auth-manager": "^v9.0.1"
     },
     "license": "MIT",
     "authors": [
