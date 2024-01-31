@@ -4,7 +4,7 @@
     "require": {
         "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*",
-        "carsguide/auth-manager": "^9.0"
+        "carsguide/auth-manager": "dev-feature-laravel-10"
     },
     "license": "MIT",
     "authors": [
@@ -31,6 +31,11 @@
             "providers": [
                 "Carsguide\\ApiWrapper\\Providers\\ApiWrapperProvider"
             ]
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
         }
     }
 }
