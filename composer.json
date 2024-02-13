@@ -4,7 +4,7 @@
     "require": {
         "guzzlehttp/guzzle": "^7.2",
         "ext-json": "*",
-        "carsguide/auth-manager": "dev-feature-laravel-10"
+        "carsguide/auth-manager": "^10.0"
     },
     "license": "MIT",
     "authors": [
